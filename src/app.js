@@ -22,7 +22,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import KeplerGl from 'kepler.gl';
-import Geocoder from 'react-mapbox-gl-geocoder'
+import Autocomplete from 'react-google-autocomplete';
+import requst from 'request';
+import 'typeface-roboto';
 
 
 // Kepler.gl actions
@@ -38,78 +40,92 @@ import Button from './button';
 import downloadJsonFile from "./file-download";
 
 // Sample data
-import nycTrips from './data/nyc-trips.csv';
-import nycTripsSubset from './data/nyc-subset.csv';
-import nycConfig from './data/nyc-config';
+import result1 from './data/result1.json';
+import config from './data/config';
+import request from 'request';
 
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
+const BASE_URL = "http://127.0.0.1:5000"
 
 class App extends Component {
   componentDidMount() {
-    // Use processCsvData helper to convert csv file into kepler.gl structure {fields, rows}
-    const data = Processors.processCsvData(nycTrips);
-    // Create dataset structure
+    const data = Processors.processGeojson(result1);
     const dataset = {
       data,
       info: {
-        // this is used to match the dataId defined in nyc-config.json. For more details see API documentation.
-        // It is paramount that this id matches your configuration otherwise the configuration file will be ignored.
         id: 'my_data'
       }
     };
-    // addDataToMap action to inject dataset into kepler.gl instance
-    this.props.dispatch(addDataToMap({datasets: dataset, config: nycConfig}));
+    this.props.dispatch(addDataToMap({datasets: dataset, config: config}));
   }
 
-
-  // This method is used as reference to show how to export the current kepler.gl instance configuration
-  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
   getMapConfig() {
-    // retrieve kepler.gl store
     const {keplerGl} = this.props;
-    // retrieve current kepler.gl instance store
     const {map} = keplerGl;
-
-    // create the config object
     return KeplerGlSchema.getConfigToSave(map);
   }
 
-  // This method is used as reference to show how to export the current kepler.gl instance configuration
-  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
   exportMapConfig = () => {
-    // create the config object
     const mapConfig = this.getMapConfig();
-    // save it as a json file
     downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
 
-  // Created to show how to replace dataset with new data and keeping the same configuration
   replaceData = () => {
-  // Use processCsvData helper to convert csv file into kepler.gl structure {fields, rows}
-    const data = Processors.processCsvData(nycTripsSubset);
-    // Create dataset structure
+    const data = Processors.processGeojson(nycTripsSubset);
     const dataset = {
       data,
       info: {
         id: 'my_data'
-        // this is used to match the dataId defined in nyc-config.json. For more details see API documentation.
-        // It is paramount that this id mathces your configuration otherwise the configuration file will be ignored.
       }
     };
 
-    // read the current configuration
     const config = this.getMapConfig();
 
-    // addDataToMap action to inject dataset into kepler.gl instance
     this.props.dispatch(addDataToMap({datasets: dataset, config}));
   };
+
+  onDestSelect = (loc) => {
+    let lat = loc.geometry.location.lat();
+    let lng = loc.geometry.location.lng();
+    let url = BASE_URL + "/changegeojson/" + lat + "," + lng;
+    request.get(url).on("response", (response) => {
+      this.replaceData()
+    });
+  }
 
   render() {
 
     return (
                 
       <div style={{position: 'absolute', width: '100%', height: '100%', minHeight: '70vh'}}>
-        <Button onClick={this.replaceData}>Replace Data</Button>
+        <span style={{
+          position: 'absolute',
+          top: 42,
+          left: 32,
+          color: "white",
+          zIndex: 10000,
+          fontSize: 18,
+          fontFamily: "Roboto",
+        }}>Add Destination: </span>
+        <Autocomplete
+          style={{width: '90%',
+            fontSize:18,
+            padding:10,
+            display:"block",
+            width:300,
+            border:"none",
+            borderBottom:[1, "solid", "#757575"],
+            position: "absolute",
+            zIndex: 100,
+            top: 27,
+            left: 170,
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            margin: 5
+          }}
+          onPlaceSelected={this.onDestSelect}
+          types={['address']}
+        />
         <AutoSizer>
           {({height, width}) => (
             <KeplerGl

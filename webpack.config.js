@@ -47,18 +47,29 @@ const CONFIG = {
         test: /\.json$/,
         loader: 'json-loader',
         exclude: [/node_modules/]
+      },
+      {
+        test: /(\.css$)/,
+        loaders: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: 'url-loader?limit=100000'
       }
     ]
   },
 
   node: {
-    fs: 'empty'
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    dns: 'empty'
   },
 
   // Optional: Enables reading mapbox token from environment variable
   plugins: [
     new webpack.EnvironmentPlugin(['MapboxAccessToken'])
-  ]
+  ],
 };
 
 // This line enables bundling against src in this repo rather than installed deck.gl module

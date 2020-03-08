@@ -41,7 +41,7 @@ const customizedKeplerGlReducer = keplerGlReducer
           show: false
         },
         mapLegend: {
-          show: true,
+          show: false,
           active: true
         },
         toggle3d: {
@@ -56,7 +56,7 @@ const customizedKeplerGlReducer = keplerGlReducer
 
 const reducers = combineReducers({
   // mount keplerGl reducer
-  keplerGl: keplerGlReducer,
+  keplerGl: customizedKeplerGlReducer,
   app: handleActions({
     // empty
   }, initialAppState),

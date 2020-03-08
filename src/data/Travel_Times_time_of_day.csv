@@ -1,7 +1,0 @@
-"Time Of Day","Origin Movement ID","Origin Display Name","Destination Movement ID","Destination Display Name","Date Range","Mean Travel Time (Seconds)","Range - Lower Bound Travel Time (Seconds)","Range - Upper Bound Travel Time (Seconds)"
-"Daily Average","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",,,
-"AM Peak","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",1177,803,1726
-"Midday","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",1371,954,1972
-"PM Peak","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",1677,1083,2597
-"Evening","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",1052,750,1476
-"Early Morning","292","BOSTON, 83 (292)","699","EVERETT, 502 (699)","9/1/2019 - 9/30/2019, Every day",815,575,1156
