@@ -1,0 +1,56 @@
+<body>
+	<span>Updating...</span>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+var apiGeolocationSuccess = function(position) {
+	let lat = position.coords.latitude;
+	let lng = position.coords.longitude;
+    alert("API geolocation success!\n\nlat = " + lat + "\nlng = " + lng);
+	let res = lat + ',' + lng;
+	jQuery.get("http://172.20.10.2:5000/changegeojsonremote/" + res, () => {
+		alert("Update map success!")
+	})
+};
+
+var tryAPIGeolocation = function() {
+    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCmtiX2CD35ks8H5W5Kj0wJTlekWLIy3I8", function(success) {
+        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+  })
+  .fail(function(err) {
+    alert("API Geolocation error! \n\n"+JSON.stringify(err));
+  });
+};
+
+var browserGeolocationSuccess = function(position) {
+    alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+};
+
+var browserGeolocationFail = function(error) {
+  switch (error.code) {
+    case error.TIMEOUT:
+      alert("Browser geolocation error !\n\nTimeout.");
+      break;
+    case error.PERMISSION_DENIED:
+      if(error.message.indexOf("Only secure origins are allowed") == 0) {
+        tryAPIGeolocation();
+      }
+      break;
+    case error.POSITION_UNAVAILABLE:
+      // alert("Browser geolocation error !\n\nPosition unavailable.");
+	  tryAPIGeolocation();
+      break;
+  }
+};
+
+var tryGeolocation = function() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        browserGeolocationSuccess,
+      browserGeolocationFail,
+      {maximumAge: 50000, timeout: 20000, enableHighAccuracy: true});
+  }
+};
+
+tryGeolocation();
+</script>

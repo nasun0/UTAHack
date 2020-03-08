@@ -1,24 +1,3 @@
-# Demo App
-
-This is the src code of kepler.gl demo app.
-
-
-### Local dev
-```
-npm install
-```
-or
-```
-yarn --ignore-engines
-```
-
-add mapbox access token to node env
-```
-export MapboxAccessToken=<your_mapbox_token>
-```
-
-then
-```
-npm start
-```
 # UTAHack
+
+Plz don't use my API keys, I'm too lazy to remove it

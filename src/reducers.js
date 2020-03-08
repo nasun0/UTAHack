@@ -55,10 +55,8 @@ const customizedKeplerGlReducer = keplerGlReducer
   });
 
 const reducers = combineReducers({
-  // mount keplerGl reducer
   keplerGl: customizedKeplerGlReducer,
   app: handleActions({
-    // empty
   }, initialAppState),
   routing: routerReducer
 });
